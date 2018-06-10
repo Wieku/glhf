@@ -14,7 +14,7 @@ type Frame struct {
 }
 
 // NewFrame creates a new fully transparent Frame with given dimensions in pixels.
-func NewFrame(width, height int, smooth bool) *Frame {
+func NewFrame(width, height int, smooth, depth bool) *Frame {
 	f := &Frame{
 		fb: binder{
 			restoreLoc: gl.FRAMEBUFFER_BINDING,
@@ -34,13 +34,22 @@ func NewFrame(width, height int, smooth bool) *Frame {
 				gl.BindFramebuffer(gl.DRAW_FRAMEBUFFER, obj)
 			},
 		},
-		tex: NewTexture(width, height, smooth, make([]uint8, width*height*4)),
+		tex: NewTexture(width, height, 0, smooth, make([]uint8, width*height*4)),
 	}
 
 	gl.GenFramebuffers(1, &f.fb.obj)
 
 	f.fb.bind()
 	gl.FramebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, f.tex.tex.obj, 0)
+
+	if depth {
+		var depthRenderBuffer uint32
+		gl.GenRenderbuffers(1, &depthRenderBuffer)
+		gl.BindRenderbuffer( gl.RENDERBUFFER, depthRenderBuffer)
+		gl.RenderbufferStorage( gl.RENDERBUFFER, gl.DEPTH_COMPONENT, int32(width), int32(height))
+		gl.FramebufferRenderbuffer( gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthRenderBuffer)
+	}
+
 	f.fb.restore()
 
 	runtime.SetFinalizer(f, (*Frame).delete)
