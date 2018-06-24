@@ -150,9 +150,17 @@ func (vs *VertexSlice) Begin() {
 	vs.va.begin()
 }
 
+func (vs *VertexSlice) BeginDraw() {
+	vs.va.beginDraw()
+}
+
 // End unbinds the underlying vertex array. Call this method when you're done with VertexSlice.
 func (vs *VertexSlice) End() {
 	vs.va.end()
+}
+
+func (vs *VertexSlice) EndDraw() {
+	vs.va.endDraw()
 }
 
 type vertexArray struct {
@@ -257,8 +265,16 @@ func (va *vertexArray) begin() {
 	va.vbo.bind()
 }
 
+func (va *vertexArray) beginDraw() {
+	va.vao.bind()
+}
+
 func (va *vertexArray) end() {
 	va.vbo.restore()
+	va.vao.restore()
+}
+
+func (va *vertexArray) endDraw() {
 	va.vao.restore()
 }
 
