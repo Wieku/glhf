@@ -150,6 +150,7 @@ func (vs *VertexSlice) Begin() {
 	vs.va.begin()
 }
 
+// BeginDraw binds vertex array without binding underlying vbo. Use this if you only want to draw elements.
 func (vs *VertexSlice) BeginDraw() {
 	vs.va.beginDraw()
 }
@@ -159,8 +160,14 @@ func (vs *VertexSlice) End() {
 	vs.va.end()
 }
 
+// End unbinds the underlying vertex array. Call this method when you're done with VertexSlice draw.
 func (vs *VertexSlice) EndDraw() {
 	vs.va.endDraw()
+}
+
+// Delete removes this vertex array from GPU memory.
+func (vs *VertexSlice) Delete() {
+	vs.va.delete()
 }
 
 type vertexArray struct {
