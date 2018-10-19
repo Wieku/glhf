@@ -286,7 +286,7 @@ func (va *vertexArray) endDraw() {
 }
 
 func (va *vertexArray) draw(i, j int) {
-	gl.DrawArrays(gl.TRIANGLES, int32(i), int32(i+j))
+	gl.DrawArrays(gl.TRIANGLES, int32(i), int32(j-i))
 }
 
 func (va *vertexArray) setVertexData(i, j int, data []float32) {
